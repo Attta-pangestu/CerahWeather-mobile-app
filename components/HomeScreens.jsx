@@ -22,15 +22,38 @@ const HomeScreens = () => {
     console.log(loc);
   }
 
+  const daysOfWeek = [
+    "Minggu",
+    "Senin",
+    "Selasa",
+    "Rabu",
+    "Kamis",
+    "Jumat",
+    "Sabtu",
+  ];
+
+  const getForecastDays = () => {
+    const today = new Date();
+    let forecastDays = [];
+    for (let i = 0; i < 5; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() + i);
+      forecastDays.push(daysOfWeek[date.getDay()]);
+    }
+    return forecastDays;
+  };
+
+  const forecastDays = getForecastDays();
+
   return (
-    <View className="flex-1 ">
+    <View className="flex-1">
       <StatusBar style="light" />
       <Image
         className="absolute h-full w-full"
         blurRadius={70}
         source={require("../assets/images/bg.png")}
       />
-      <SafeAreaView className="flex flex-1 my-4 mx-2">
+      <SafeAreaView className="flex flex-1 my-4 mx-4">
         {/* Search Section */}
         <View style={{ height: "7%" }} className="mx-4 mb-14 relative z-50">
           {/* Search Bar */}
@@ -68,7 +91,7 @@ const HomeScreens = () => {
                   return (
                     <TouchableOpacity
                       key={index}
-                      className="flex-row items-center gap-3  border-gray-400 rounded-3xl px-3 py-1 mb-2 "
+                      className="flex-row items-center gap-3 border-gray-400 rounded-3xl px-3 py-1 mb-2"
                       style={{
                         borderBottomWidth: isLastBorder ? 0 : 2,
                       }}
@@ -76,7 +99,7 @@ const HomeScreens = () => {
                     >
                       <IconsSolid.MapPinIcon color={"gray"} size={20} />
 
-                      <Text className="text-black text-lg ">
+                      <Text className="text-black text-lg">
                         Belitung, Indonesia
                       </Text>
                     </TouchableOpacity>
@@ -87,7 +110,7 @@ const HomeScreens = () => {
           </View>
         </View>
         {/* Weather Forecast Section */}
-        <View className="flex  flex-1 mb-2 gap-6 ">
+        <View className="flex flex-1 mb-2 gap-6">
           {/* Loc Name */}
           <View>
             <Text className="text-white text-center text-3xl font-extrabold">
@@ -98,15 +121,15 @@ const HomeScreens = () => {
             </Text>
           </View>
           {/* Image ForeCasting */}
-          <View className="flex-row justify-center items-center ">
+          <View className="flex-row justify-center items-center">
             <Image
               className="w-52 h-52"
               source={require("../assets/images/partlycloudy.png")}
             />
           </View>
           {/* Degree forecast */}
-          <View className="flex-1 items-center ">
-            <Text className="font-extrabold text-white text-6xl ">
+          <View className="flex-1 items-center">
+            <Text className="font-extrabold text-white text-6xl">
               23&#176;C
             </Text>
             <Text className="font-semibold text-white text-xl tracking-widest">
@@ -115,21 +138,21 @@ const HomeScreens = () => {
           </View>
           {/* Weather Stats */}
           <View className="flex-row mx-4 justify-around">
-            <View className="flex-row space-x-2  items-center ">
+            <View className="flex-row space-x-2 items-center">
               <Image
                 className="h-8 w-8"
                 source={require("../assets/icons/wind.png")}
               />
               <Text className="text-white font-semibold text-base">22km/h</Text>
             </View>
-            <View className="flex-row space-x-2  items-center ">
+            <View className="flex-row space-x-2 items-center">
               <Image
                 className="h-8 w-8"
                 source={require("../assets/icons/drop.png")}
               />
               <Text className="text-white font-semibold text-base">23%</Text>
             </View>
-            <View className="flex-row space-x-2  items-center ">
+            <View className="flex-row space-x-2 items-center">
               <Image
                 className="h-8 w-8"
                 source={require("../assets/icons/sun.png")}
@@ -140,22 +163,43 @@ const HomeScreens = () => {
             </View>
           </View>
           {/* Daily Forecast */}
-          <View>
+          <View className="mb-b space-y-3">
+            <View className="flex-row items-center space-x-2 mx-5">
+              <IconsSolid.CalendarDaysIcon size={24} color={"white"} />
+              <Text className="text-white text-base">
+                Ramalan 5 Hari Kedepan
+              </Text>
+            </View>
             <ScrollView
               horizontal
-              className="flex-row"
+              contentContainerStyle={{
+                paddingHorizontal: 20,
+              }}
               showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ paddingHorizontal: 15 }}
             >
-              <View
-                className="flex justify-center items-center w-24 rounded-3xl py-3 space-y-2"
-                style={{ backgroundColor: opacity.bgWhite(0.15) }}
-              >
-                <Image
-                  className="h-11 w-11"
-                  source={require("../assets/images/heavyrain.png")}
-                />
-              </View>
+              {forecastDays.map((day, index) => {
+                const isFirstIndex = index === 0;
+                return (
+                  <View
+                    key={index}
+                    className="flex justify-center items-center w-24 rounded-3xl py-3 space-y-2"
+                    style={{
+                      backgroundColor: opacity.bgWhite(0.15),
+                      marginHorizontal: isFirstIndex ? 0 : 10,
+                      marginRight: isFirstIndex ? 5 : 0,
+                    }}
+                  >
+                    <Image
+                      className="h-11 w-11"
+                      source={require("../assets/images/heavyrain.png")}
+                    />
+                    <Text className="text-white">{day}</Text>
+                    <Text className="text-white text-xl font-semibold">
+                      23&#176;C
+                    </Text>
+                  </View>
+                );
+              })}
             </ScrollView>
           </View>
         </View>

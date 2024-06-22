@@ -9,19 +9,31 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { opacity } from "../utils/opacity";
 import * as Icons from "react-native-heroicons/outline";
 import * as IconsSolid from "react-native-heroicons/solid";
+import { debounce } from "lodash";
+import { fetchLocForecast, fetchSearchLocForecast } from "../api/weather";
 
 const HomeScreens = () => {
   const [showSearch, setShowSearch] = useState(false);
-  const [location, setLocation] = useState([1, 2, 3]);
+  const [location, setLocation] = useState([]);
 
   function handleLocSelection(loc) {
     console.log(loc);
   }
 
+  function handleSearch(text) {
+    if (text.length > 2) {
+      fetchSearchLocForecast({ city: text }).then((data) => {
+        setLocation(data);
+      });
+    }
+  }
+
+  const handleTextDebounce = useCallback(debounce(handleSearch, 1200), []); 
+  
   const daysOfWeek = [
     "Minggu",
     "Senin",
@@ -67,6 +79,9 @@ const HomeScreens = () => {
           >
             {showSearch ? (
               <TextInput
+                onChangeText={(text) => {
+                  handleTextDebounce(text);
+                }}
                 placeholder="Cari Kota"
                 placeholderTextColor={"lightgray"}
                 className="pl-6 pb-1 h-10 flex-1 text-base text-white"
@@ -98,9 +113,8 @@ const HomeScreens = () => {
                       onPress={() => handleLocSelection(loc)}
                     >
                       <IconsSolid.MapPinIcon color={"gray"} size={20} />
-
                       <Text className="text-black text-lg">
-                        Belitung, Indonesia
+                        {loc.name}, {loc.region}
                       </Text>
                     </TouchableOpacity>
                   );
@@ -210,4 +224,3 @@ const HomeScreens = () => {
 
 export default HomeScreens;
 
-const styles = StyleSheet.create({});

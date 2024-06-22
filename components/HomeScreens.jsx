@@ -1,6 +1,7 @@
 import {
   Image,
   SafeAreaView,
+  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -12,7 +13,6 @@ import React, { useState } from "react";
 import { opacity } from "../utils/opacity";
 import * as Icons from "react-native-heroicons/outline";
 import * as IconsSolid from "react-native-heroicons/solid";
-import { ScrollView } from "react-native-gesture-handler";
 
 const HomeScreens = () => {
   const [showSearch, setShowSearch] = useState(false);
@@ -140,13 +140,24 @@ const HomeScreens = () => {
             </View>
           </View>
           {/* Daily Forecast */}
-          <View className="flex-row justify-around"></View>
-          <ScrollView
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: 15 }}
-          >
-            <View className=""></View>
-          </ScrollView>
+          <View>
+            <ScrollView
+              horizontal
+              className="flex-row"
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingHorizontal: 15 }}
+            >
+              <View
+                className="flex justify-center items-center w-24 rounded-3xl py-3 space-y-2"
+                style={{ backgroundColor: opacity.bgWhite(0.15) }}
+              >
+                <Image
+                  className="h-11 w-11"
+                  source={require("../assets/images/heavyrain.png")}
+                />
+              </View>
+            </ScrollView>
+          </View>
         </View>
       </SafeAreaView>
     </View>

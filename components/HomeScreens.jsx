@@ -41,7 +41,7 @@ const HomeScreens = () => {
 
   const handleTextDebounce = useCallback(debounce(handleSearch, 300), []);
 
-  const { current, location } = weather;
+  const { current, location, forecast } = weather;
 
   const daysOfWeek = [
     "Minggu",
@@ -139,7 +139,7 @@ const HomeScreens = () => {
           {/* Loc Name */}
           <View>
             <Text className="text-white text-center text-3xl font-extrabold">
-              {location ? location.name : "Load Location"}
+              {location ? location.name : "Pilih lokasi dulu"}
               <Text className="text-gray-300 text-center text-lg font-bold">
                 {location ? ", " + location.region : ""}
               </Text>
@@ -149,7 +149,14 @@ const HomeScreens = () => {
           <View className="flex-row justify-center items-center">
             <Image
               className="w-52 h-52"
-              source={weatherImages[current?.condition?.text.toString()]}
+              source={
+                weatherImages[
+                  current?.condition?.text.replace(
+                    /(^\w{1})|(\s+\w{1})/g,
+                    (letter) => letter.toUpperCase(),
+                  )
+                ]
+              }
             />
           </View>
           {/* Degree forecast */}
@@ -206,8 +213,9 @@ const HomeScreens = () => {
               }}
               showsHorizontalScrollIndicator={false}
             >
-              {forecastDays.map((day, index) => {
+              {forecast?.forecastday?.map((day, index) => {
                 const isFirstIndex = index === 0;
+                console.log({});
                 return (
                   <View
                     key={index}
@@ -220,11 +228,24 @@ const HomeScreens = () => {
                   >
                     <Image
                       className="h-11 w-11"
-                      source={require("../assets/images/heavyrain.png")}
+                      source={
+                        weatherImages[
+                          day?.day?.condition?.text?.replace(
+                            /(^\w{1})|(\s+\w{1})/g,
+                            (letter) => letter.toUpperCase(),
+                          )
+                        ]
+                      }
                     />
-                    <Text className="text-white">{day}</Text>
+                    <Text className="text-white">{day.date}</Text>
+                    <Text className="text-white">
+                      {day?.day?.condition?.text?.replace(
+                        /(^\w{1})|(\s+\w{1})/g,
+                        (letter) => letter.toUpperCase(),
+                      )}
+                    </Text>
                     <Text className="text-white text-xl font-semibold">
-                      23&#176;C
+                      {day?.day?.avgtemp_c}&#176;C
                     </Text>
                   </View>
                 );

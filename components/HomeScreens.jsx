@@ -15,25 +15,34 @@ import * as Icons from "react-native-heroicons/outline";
 import * as IconsSolid from "react-native-heroicons/solid";
 import { debounce } from "lodash";
 import { fetchLocForecast, fetchSearchLocForecast } from "../api/weather";
+import { weatherImages } from "../constant";
 
 const HomeScreens = () => {
   const [showSearch, setShowSearch] = useState(false);
-  const [location, setLocation] = useState([]);
+  const [locations, setLocations] = useState([]);
+  const [weather, setWeather] = useState({});
 
   function handleLocSelection(loc) {
+    setLocations([]);
     console.log(loc);
+    fetchLocForecast({ city: loc.name, days: 7 }).then((data) => {
+      console.log(data);
+      setWeather(data);
+    });
   }
 
   function handleSearch(text) {
     if (text.length > 2) {
       fetchSearchLocForecast({ city: text }).then((data) => {
-        setLocation(data);
+        setLocations(data);
       });
     }
   }
 
-  const handleTextDebounce = useCallback(debounce(handleSearch, 1200), []); 
-  
+  const handleTextDebounce = useCallback(debounce(handleSearch, 300), []);
+
+  const { current, location } = weather;
+
   const daysOfWeek = [
     "Minggu",
     "Senin",
@@ -99,10 +108,10 @@ const HomeScreens = () => {
           </View>
           {/* Search Results */}
           <View>
-            {location.length > 0 && showSearch ? (
+            {locations.length > 0 && showSearch ? (
               <View className="absolute w-full bg-gray-300 top-1 rounded-3xl p-1">
-                {location.map((loc, index) => {
-                  let isLastBorder = index === location.length - 1;
+                {locations.map((loc, index) => {
+                  let isLastBorder = index === locations.length - 1;
                   return (
                     <TouchableOpacity
                       key={index}
@@ -110,7 +119,9 @@ const HomeScreens = () => {
                       style={{
                         borderBottomWidth: isLastBorder ? 0 : 2,
                       }}
-                      onPress={() => handleLocSelection(loc)}
+                      onPress={() => {
+                        handleLocSelection(loc);
+                      }}
                     >
                       <IconsSolid.MapPinIcon color={"gray"} size={20} />
                       <Text className="text-black text-lg">
@@ -128,9 +139,9 @@ const HomeScreens = () => {
           {/* Loc Name */}
           <View>
             <Text className="text-white text-center text-3xl font-extrabold">
-              Belitung
+              {location ? location.name : "Load Location"}
               <Text className="text-gray-300 text-center text-lg font-bold">
-                , Bangka Belitung
+                {location ? ", " + location.region : ""}
               </Text>
             </Text>
           </View>
@@ -138,16 +149,16 @@ const HomeScreens = () => {
           <View className="flex-row justify-center items-center">
             <Image
               className="w-52 h-52"
-              source={require("../assets/images/partlycloudy.png")}
+              source={weatherImages[current?.condition?.text.toString()]}
             />
           </View>
           {/* Degree forecast */}
           <View className="flex-1 items-center">
             <Text className="font-extrabold text-white text-6xl">
-              23&#176;C
+              {current ? current.temp_c : "0"}&#176;C
             </Text>
             <Text className="font-semibold text-white text-xl tracking-widest">
-              Partly Cloudy
+              {current?.condition?.text.toString()}
             </Text>
           </View>
           {/* Weather Stats */}
@@ -157,14 +168,18 @@ const HomeScreens = () => {
                 className="h-8 w-8"
                 source={require("../assets/icons/wind.png")}
               />
-              <Text className="text-white font-semibold text-base">22km/h</Text>
+              <Text className="text-white font-semibold text-base">
+                {current?.wind_kph} Km/jam
+              </Text>
             </View>
             <View className="flex-row space-x-2 items-center">
               <Image
                 className="h-8 w-8"
                 source={require("../assets/icons/drop.png")}
               />
-              <Text className="text-white font-semibold text-base">23%</Text>
+              <Text className="text-white font-semibold text-base">
+                ${current?.humidity}%
+              </Text>
             </View>
             <View className="flex-row space-x-2 items-center">
               <Image
@@ -172,7 +187,7 @@ const HomeScreens = () => {
                 source={require("../assets/icons/sun.png")}
               />
               <Text className="text-white font-semibold text-base">
-                6:05 AM
+                ${current?.humidity}
               </Text>
             </View>
           </View>
@@ -223,4 +238,3 @@ const HomeScreens = () => {
 };
 
 export default HomeScreens;
-

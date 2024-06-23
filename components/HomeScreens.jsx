@@ -206,7 +206,7 @@ const HomeScreens = () => {
                 source={require("../assets/icons/sun.png")}
               />
               <Text className="text-white font-semibold text-base">
-                ${current?.humidity}
+                {forecast?.forecastday[0]?.astro.sunrise}
               </Text>
             </View>
           </View>

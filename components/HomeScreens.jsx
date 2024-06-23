@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { opacity } from "../utils/opacity";
 import * as Icons from "react-native-heroicons/outline";
 import * as IconsSolid from "react-native-heroicons/solid";
@@ -22,8 +22,20 @@ const HomeScreens = () => {
   const [locations, setLocations] = useState([]);
   const [weather, setWeather] = useState({});
 
+  const initFetchData = async () => {
+    fetchLocForecast({ city: "Jakarta", days: 7 }).then((data) => {
+      console.log(data);
+      setWeather(data);
+    });
+  };
+
+  useEffect(() => {
+    initFetchData();
+  }, []);
+
   function handleLocSelection(loc) {
     setLocations([]);
+    setShowSearch(false);
     console.log(loc);
     fetchLocForecast({ city: loc.name, days: 7 }).then((data) => {
       console.log(data);
@@ -185,7 +197,7 @@ const HomeScreens = () => {
                 source={require("../assets/icons/drop.png")}
               />
               <Text className="text-white font-semibold text-base">
-                ${current?.humidity}%
+                {current?.humidity}%
               </Text>
             </View>
             <View className="flex-row space-x-2 items-center">

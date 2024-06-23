@@ -74,9 +74,9 @@ const HomeScreens = () => {
         blurRadius={70}
         source={require("../assets/images/bg.png")}
       />
-      <SafeAreaView className="flex flex-1 my-4 mx-4">
+      <SafeAreaView className="flex flex-1  mx-4">
         {/* Search Section */}
-        <View style={{ height: "7%" }} className="mx-4 mb-14 relative z-50">
+        <View style={{ height: "7%" }} className="mx-4 mb-6 relative z-50">
           {/* Search Bar */}
           <View
             className="flex-row justify-end items-center rounded-full"
@@ -169,7 +169,7 @@ const HomeScreens = () => {
             </Text>
           </View>
           {/* Weather Stats */}
-          <View className="flex-row mx-4 justify-around">
+          <View className="flex-row mx-4 mt-4 justify-around">
             <View className="flex-row space-x-2 items-center">
               <Image
                 className="h-8 w-8"
@@ -237,7 +237,10 @@ const HomeScreens = () => {
                         ]
                       }
                     />
-                    <Text className="text-white">{day.date}</Text>
+                    <Text className="text-white">
+                      {daysOfWeek[new Date(day.date).getDay()]}
+                    </Text>
+
                     <Text className="text-white">
                       {day?.day?.condition?.text?.replace(
                         /(^\w{1})|(\s+\w{1})/g,
